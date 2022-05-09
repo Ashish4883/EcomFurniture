@@ -1,5 +1,8 @@
-﻿using EcomFurniture.Models;
+﻿using EcomFurniture.Data;
+using EcomFurniture.Models;
+using EcomFurniture.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,15 +15,33 @@ namespace EcomFurniture.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly FurnitureContext _context;
+        public HomeController(ILogger<HomeController> logger,FurnitureContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            HomeVM homeVM = new HomeVM()
+            {
+                Products = _context.Product.Include(u => u.Category),
+                Categories = _context.Category
+            };
+
+            return View(homeVM);
+        }
+
+        public IActionResult Details(int id)
+        {
+            DetailsVM DetailsVM = new DetailsVM()
+            {
+                Product = _context.Product.Include(u => u.Category)
+                .Where(u => u.Id == id).FirstOrDefault(),
+                ExistsInCart = false
+            };
+            return View(DetailsVM);
         }
 
         public IActionResult Privacy()
