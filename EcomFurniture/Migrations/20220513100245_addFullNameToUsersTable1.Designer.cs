@@ -4,14 +4,16 @@ using EcomFurniture.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EcomFurniture.Migrations
 {
     [DbContext(typeof(FurnitureContext))]
-    partial class FurnitureContextModelSnapshot : ModelSnapshot
+    [Migration("20220513100245_addFullNameToUsersTable1")]
+    partial class addFullNameToUsersTable1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

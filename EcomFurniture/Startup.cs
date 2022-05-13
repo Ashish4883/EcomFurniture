@@ -2,6 +2,7 @@ using EcomFurniture.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,18 @@ namespace EcomFurniture
             services.AddDbContext<FurnitureContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("FurnitureContext")));
 
+
+            services.AddIdentity<IdentityUser,IdentityRole>()
+                .AddDefaultTokenProviders().AddDefaultUI()
+                .AddEntityFrameworkStores<FurnitureContext>();
+
+            services.AddHttpContextAccessor();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -49,10 +62,15 @@ namespace EcomFurniture
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
+            
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
